@@ -1,8 +1,18 @@
+package goatbot;
+
+import java.util.Scanner;
+
 /**
  * Entry point for Goat Bot.
  */
-import java.util.Scanner;
 public class GoatBot {
+    private static final int MAX_TASK_COUNT = 100;
+
+    /**
+     * Starts the command loop and responds to user input.
+     *
+     * @param args command line arguments, currently unused
+     */
     public static void main(String[] args) {
         String welcomeBanner = """
                 ____________________________________________________________
@@ -26,7 +36,6 @@ public class GoatBot {
                 ____________________________________________________________
                 """;
 
-        // string if user says bye
         String farewell = """
                 ____________________________________________________________
                  Bye. Hope to see you again soon! Happy hooping :)
@@ -38,7 +47,7 @@ public class GoatBot {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         int taskCounter = 0;
-        Task[] tasks = new Task[100];
+        Task[] tasks = new Task[MAX_TASK_COUNT];
 
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
@@ -46,7 +55,8 @@ public class GoatBot {
                 System.out.println("     Here are the tasks in your list:");
                 for (int i = 1; i <= taskCounter; i++) {
                     String statusIcon = tasks[i - 1].getStatusIcon();
-                    System.out.println("     " + i + ".[" + statusIcon + "] " + tasks[i - 1].getDescription());
+                    System.out.println("     " + i + ".[" + statusIcon + "] "
+                            + tasks[i - 1].getDescription());
                 }
                 System.out.println(divider);
             } else if (userInput.startsWith("unmark ")) {
