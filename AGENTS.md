@@ -35,6 +35,8 @@ based on the SE-EDU intermediate Java coding standard.
 
 ## Git
 
+For all future commits in this project, follow the project-specific `seedu-git-standard` skill,
+based on the SE-EDU Git conventions.
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
