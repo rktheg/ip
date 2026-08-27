@@ -39,13 +39,23 @@ public class GoatBot {
         String userInput = scanner.nextLine();
         int listCounter = 0;
         String[] listOfWords = new String[100];
+        boolean[] isDone = new boolean[100];
 
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
                 System.out.println(divider);
+                System.out.println("     Here are the tasks in your list:");
                 for (int i = 1; i <= listCounter; i++) {
-                    System.out.println("     " + i + ". " + listOfWords[i - 1]);
+                    String statusIcon = isDone[i - 1] ? "[X]" : "[ ]";
+                    System.out.println("     " + i + "." + statusIcon + " " + listOfWords[i - 1]);
                 }
+                System.out.println(divider);
+            } else if (userInput.startsWith("mark ")) {
+                int taskNumber = Integer.parseInt(userInput.substring(5));
+                isDone[taskNumber - 1] = true;
+                System.out.println(divider);
+                System.out.println("     Nice! I've marked this task as done:");
+                System.out.println("       [X] " + listOfWords[taskNumber - 1]);
                 System.out.println(divider);
             } else {
                 listOfWords[listCounter++] = userInput;
