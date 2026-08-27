@@ -50,6 +50,13 @@ public class GoatBot {
                     System.out.println("     " + i + "." + statusIcon + " " + listOfWords[i - 1]);
                 }
                 System.out.println(divider);
+            } else if (userInput.startsWith("unmark ")) {
+                int taskNumber = Integer.parseInt(userInput.substring(7));
+                isDone[taskNumber - 1] = false;
+                System.out.println(divider);
+                System.out.println("     OK, I've marked this task as not done yet:");
+                System.out.println("       [ ] " + listOfWords[taskNumber - 1]);
+                System.out.println(divider);
             } else if (userInput.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(5));
                 isDone[taskNumber - 1] = true;
