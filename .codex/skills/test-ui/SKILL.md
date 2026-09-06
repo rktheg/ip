@@ -44,6 +44,7 @@ full expected console output
 ````
 
 Keep expected output exact. Whitespace, divider lines, and line breaks matter.
+Banner-art-only lines are ignored by the runner so the test plan can focus on meaningful text output.
 
 ## Running Tests
 

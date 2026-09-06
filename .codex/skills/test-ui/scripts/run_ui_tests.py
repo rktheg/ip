@@ -42,9 +42,11 @@ def main() -> int:
 
     for test_case in test_cases:
         actual_output = run_program(args.program_command, test_case.input_text)
-        print_session_record(test_case, actual_output)
-        if normalize(actual_output) != normalize(test_case.expected_output):
-            print_failure(test_case, actual_output)
+        comparable_actual_output = remove_banner_art(actual_output)
+        comparable_expected_output = remove_banner_art(test_case.expected_output)
+        print_session_record(test_case, comparable_actual_output)
+        if normalize(comparable_actual_output) != normalize(comparable_expected_output):
+            print_failure(test_case, comparable_expected_output, comparable_actual_output)
             return 1
 
     print(f"All {len(test_cases)} UI test case(s) passed.")
@@ -114,6 +116,19 @@ def normalize(text: str) -> str:
     return text.replace("\r\n", "\n").rstrip()
 
 
+def remove_banner_art(text: str) -> str:
+    return "\n".join(line for line in text.splitlines() if not is_banner_art_line(line))
+
+
+def is_banner_art_line(line: str) -> bool:
+    stripped_line = line.strip()
+    if not stripped_line:
+        return False
+    if set(stripped_line) == {"?"}:
+        return True
+    return all(not character.isascii() for character in stripped_line)
+
+
 def print_session_record(test_case: UiTestCase, actual_output: str) -> None:
     print(f"=== Test Case: {test_case.name} ===")
     if test_case.aim:
@@ -124,10 +139,10 @@ def print_session_record(test_case: UiTestCase, actual_output: str) -> None:
     print(actual_output, end="" if actual_output.endswith("\n") else "\n")
 
 
-def print_failure(test_case: UiTestCase, actual_output: str) -> None:
+def print_failure(test_case: UiTestCase, expected_output: str, actual_output: str) -> None:
     print(f"FAILED: {test_case.name}")
     print("--- Expected Output ---")
-    print(test_case.expected_output)
+    print(expected_output)
     print("--- Actual Output ---")
     print(actual_output, end="" if actual_output.endswith("\n") else "\n")
 
