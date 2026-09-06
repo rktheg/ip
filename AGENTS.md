@@ -33,6 +33,12 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 For all Java code in this project, follow the project-specific `seedu-java-coding-standard` skill,
 based on the SE-EDU intermediate Java coding standard.
 
+## UI testing
+
+After each code update, check whether the change affects text UI behavior. If it does, update
+`test/ui-test-plan.md` so the recorded test cases, inputs, and expected outputs match the new behavior.
+After each code update, invoke the project-specific `test-ui` skill and report the test result.
+
 ## Git
 
 For all future commits in this project, follow the project-specific `seedu-git-standard` skill,
