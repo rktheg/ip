@@ -7,6 +7,7 @@ import java.util.Scanner;
  */
 public class GoatBot {
     private static final int MAX_TASK_COUNT = 100;
+    private static final String DIVIDER = "    ____________________________________________________________";
 
     /**
      * Starts the command loop and responds to user input.
@@ -43,7 +44,6 @@ public class GoatBot {
                 """;
 
         System.out.println(welcomeBanner);
-        String divider = "    ____________________________________________________________";
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         int taskCounter = 0;
@@ -51,62 +51,96 @@ public class GoatBot {
 
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
-                System.out.println(divider);
-                System.out.println("     Here are the tasks in your list:");
-                for (int i = 1; i <= taskCounter; i++) {
-                    System.out.println("     " + i + "." + tasks[i - 1].toString());
-                }
-                System.out.println(divider);
+                showList(tasks, taskCounter);
             } else if (userInput.startsWith("unmark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(7));
                 tasks[taskNumber - 1].markAsNotDone();
-                System.out.println(divider);
-                System.out.println("     OK, I've marked this task as not done yet:");
-                System.out.println(tasks[taskNumber - 1].toString());
-                System.out.println(divider);
+                showUnmarkedTask(tasks[taskNumber - 1]);
             } else if (userInput.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(userInput.substring(5));
                 tasks[taskNumber - 1].markAsDone();
-                System.out.println(divider);
-                System.out.println("     Nice! I've marked this task as done:");
-                System.out.println(tasks[taskNumber - 1].toString());
-                System.out.println(divider);
+                showMarkedTask(tasks[taskNumber - 1]);
             } else if (userInput.startsWith("event ")) {
-                int eventIndex = userInput.indexOf('/'); //find from
-                String eventString = userInput.substring(6, eventIndex-1);
-                String eventDate = userInput.substring(eventIndex+6);
-                String[] eventDateSplit = eventDate.split("/to", 2);
-                String eventStartTime = eventDateSplit[0].trim();
-                String eventEndTime = eventDateSplit[1].trim();
-                tasks[taskCounter++] = new Event(eventString, eventStartTime, eventEndTime);
-                System.out.println(divider);
-                System.out.println("    added event successfully, better attend: \n" +
-                                   "    " + eventString);
-                System.out.println("    Now you have " + taskCounter + " tasks in your list.");
-                System.out.println(divider);
-            } else if(userInput.startsWith("todo ")) {
+                tasks[taskCounter] = parseEvent(userInput);
+                taskCounter++;
+                showAddedEvent(tasks[taskCounter - 1], taskCounter);
+            } else if (userInput.startsWith("todo ")) {
                 String todoString = userInput.substring(5);
                 tasks[taskCounter++] = new Todo(todoString);
-                System.out.println(divider);
-                System.out.println("    added todo successfully, dont forget: \n" +
-                                   "    " + todoString);
-                System.out.println("    Now you have " + taskCounter + " tasks in your list.");
-                System.out.println(divider);
+                showAddedTodo(tasks[taskCounter - 1], taskCounter);
             } else if (userInput.startsWith("deadline ")) {
-                int deadlineIndex = userInput.indexOf("/");
-                String deadlineString = userInput.substring(9, deadlineIndex-1); //to account for the additional space char as well
-                String deadlineDate = userInput.substring(deadlineIndex+4); //+4 to account for /by
-                tasks[taskCounter++] = new Deadline(deadlineString, deadlineDate);
-                System.out.println(divider);
-                System.out.println("    added deadline successfully, DO ON TIME PLS: \n" + " " +
-                                   "    " + deadlineString);
-                System.out.println("    Now you have " + taskCounter + " tasks in your list.");
-                System.out.println(divider);
+                tasks[taskCounter] = parseDeadline(userInput);
+                taskCounter++;
+                showAddedDeadline(tasks[taskCounter - 1], taskCounter);
             } else {
-                System.out.println("Invalid input. Please try again."); //guard
+                System.out.println("Invalid input. Please try again.");
             }
             userInput = scanner.nextLine();
         }
-        System.out.println(farewell);//if bye is typed
+        System.out.println(farewell);
+    }
+
+    private static Deadline parseDeadline(String userInput) {
+        int deadlineIndex = userInput.indexOf("/");
+        String deadlineString = userInput.substring(9, deadlineIndex - 1);
+        String deadlineDate = userInput.substring(deadlineIndex + 4);
+        return new Deadline(deadlineString, deadlineDate);
+    }
+
+    private static Event parseEvent(String userInput) {
+        int eventIndex = userInput.indexOf('/');
+        String eventString = userInput.substring(6, eventIndex - 1);
+        String eventDate = userInput.substring(eventIndex + 6);
+        String[] eventDateSplit = eventDate.split("/to", 2);
+        String eventStartTime = eventDateSplit[0].trim();
+        String eventEndTime = eventDateSplit[1].trim();
+        return new Event(eventString, eventStartTime, eventEndTime);
+    }
+
+    private static void showList(Task[] tasks, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("     Here are the tasks in your list:");
+        for (int i = 1; i <= taskCounter; i++) {
+            System.out.println("     " + i + "." + tasks[i - 1].toString());
+        }
+        System.out.println(DIVIDER);
+    }
+
+    private static void showMarkedTask(Task task) {
+        System.out.println(DIVIDER);
+        System.out.println("     Nice! I've marked this task as done:");
+        System.out.println(task.toString());
+        System.out.println(DIVIDER);
+    }
+
+    private static void showUnmarkedTask(Task task) {
+        System.out.println(DIVIDER);
+        System.out.println("     OK, I've marked this task as not done yet:");
+        System.out.println(task.toString());
+        System.out.println(DIVIDER);
+    }
+
+    private static void showAddedTodo(Task task, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("    added todo successfully, dont forget: \n"
+                + "    " + task.getDescription());
+        System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
+    }
+
+    private static void showAddedDeadline(Task task, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("    added deadline successfully, DO ON TIME PLS: \n" + " "
+                + "    " + task.getDescription());
+        System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
+    }
+
+    private static void showAddedEvent(Task task, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("    added event successfully, better attend: \n"
+                + "    " + task.getDescription());
+        System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
     }
 }
