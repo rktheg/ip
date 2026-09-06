@@ -4,8 +4,11 @@ package goatbot;
  * Represents one task in the task list.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private static final String DONE_STATUS_ICON = "X";
+    private static final String NOT_DONE_STATUS_ICON = " ";
+
+    private final String description;
+    private boolean isDone;
 
     /**
      * Creates a task with the given description.
@@ -13,22 +16,18 @@ public class Task {
      * @param description text that describes the task
      */
     public Task(String description) {
-
         this.description = description;
         isDone = false;
     }
 
     public String getStatusIcon() {
-        String notDone = " ";
-        String done = "X";
-        return isDone ? done : notDone;
+        return isDone ? DONE_STATUS_ICON : NOT_DONE_STATUS_ICON;
     }
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() + "] " + description;
+        return "[" + getStatusIcon() + "] " + description;
     }
-
 
     /**
      * Marks this task as done.

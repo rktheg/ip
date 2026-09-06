@@ -4,8 +4,8 @@ package goatbot;
  * Represents a task that happens from one specified time to another.
  */
 public class Event extends Task {
-    protected String from;
-    protected String to;
+    private final String from;
+    private final String to;
 
     /**
      * Creates an event task with the given description, start time, and end time.

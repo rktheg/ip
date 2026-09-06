@@ -3,7 +3,7 @@ package goatbot;
 /**
  * Represents a task without a deadline or event time.
  */
-public class Todo extends Task{
+public class Todo extends Task {
 
     /**
      * Creates a todo task with the given description.
