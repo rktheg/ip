@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class GoatBot {
     private static final int MAX_TASK_COUNT = 100;
     private static final String DIVIDER = "    ____________________________________________________________";
+    private static final String INVALID_INPUT_MESSAGE = "Invalid input. Please try again.";
 
     /**
      * Starts the command loop and responds to user input.
@@ -50,51 +51,53 @@ public class GoatBot {
         Task[] tasks = new Task[MAX_TASK_COUNT]; //init task array with MAX_TASK_COUNT places
 
         while (!userInput.equals("bye")) {
-            if (userInput.equals("list")) {
-                showList(tasks, taskCounter);
-            } else if (userInput.startsWith("unmark ")) {
-                int taskNumber = Integer.parseInt(userInput.substring(7));
-                tasks[taskNumber - 1].markAsNotDone();
-                showUnmarkedTask(tasks[taskNumber - 1]);
-            } else if (userInput.startsWith("mark ")) {
-                int taskNumber = Integer.parseInt(userInput.substring(5));
-                tasks[taskNumber - 1].markAsDone();
-                showMarkedTask(tasks[taskNumber - 1]);
-            } else if (userInput.startsWith("event ")) {
-                tasks[taskCounter] = parseEvent(userInput);
-                taskCounter++;
-                showAddedEvent(tasks[taskCounter - 1], taskCounter);
-            } else if (userInput.startsWith("todo ")) {
-                String todoString = userInput.substring(5);
-                tasks[taskCounter++] = new Todo(todoString);
-                showAddedTodo(tasks[taskCounter - 1], taskCounter);
-            } else if (userInput.startsWith("deadline ")) {
-                tasks[taskCounter] = parseDeadline(userInput);
-                taskCounter++;
-                showAddedDeadline(tasks[taskCounter - 1], taskCounter);
-            } else {
-                System.out.println("Invalid input. Please try again.");
+            try {
+                if (userInput.equals("list")) {
+                    showList(tasks, taskCounter);
+                } else if (userInput.startsWith("unmark ")) {
+                    int taskNumber = parseTaskNumber(userInput, "unmark", taskCounter);
+                    tasks[taskNumber - 1].markAsNotDone();
+                    showUnmarkedTask(tasks[taskNumber - 1]);
+                } else if (userInput.startsWith("mark ")) {
+                    int taskNumber = parseTaskNumber(userInput, "mark", taskCounter);
+                    tasks[taskNumber - 1].markAsDone();
+                    showMarkedTask(tasks[taskNumber - 1]);
+                } else if (userInput.startsWith("event ")) {
+                    tasks[taskCounter] = Parser.parseEvent(userInput);
+                    taskCounter++;
+                    showAddedEvent(tasks[taskCounter - 1], taskCounter);
+                } else if (userInput.equals("todo") || userInput.startsWith("todo ")) {
+                    tasks[taskCounter] = Parser.parseTodo(userInput);
+                    taskCounter++;
+                    showAddedTodo(tasks[taskCounter - 1], taskCounter);
+                } else if (userInput.startsWith("deadline ")) {
+                    tasks[taskCounter] = Parser.parseDeadline(userInput);
+                    taskCounter++;
+                    showAddedDeadline(tasks[taskCounter - 1], taskCounter);
+                } else {
+                    System.out.println(INVALID_INPUT_MESSAGE);
+                }
+            } catch (GoatBotException e) {
+                System.out.println(e.getMessage());
             }
             userInput = scanner.nextLine();
         }
         System.out.println(farewell);
     }
 
-    private static Deadline parseDeadline(String userInput) {
-        int deadlineIndex = userInput.indexOf("/");
-        String deadlineString = userInput.substring(9, deadlineIndex - 1);
-        String deadlineDate = userInput.substring(deadlineIndex + 4);
-        return new Deadline(deadlineString, deadlineDate);
-    }
-
-    private static Event parseEvent(String userInput) {
-        int eventIndex = userInput.indexOf('/');
-        String eventString = userInput.substring(6, eventIndex - 1);
-        String eventDate = userInput.substring(eventIndex + 6);
-        String[] eventDateSplit = eventDate.split("/to", 2);
-        String eventStartTime = eventDateSplit[0].trim();
-        String eventEndTime = eventDateSplit[1].trim();
-        return new Event(eventString, eventStartTime, eventEndTime);
+    /**
+     * Parses and validates a task number from a mark or unmark command.
+     */
+    private static int parseTaskNumber(String userInput, String command, int taskCounter) throws GoatBotException {
+        try {
+            int taskNumber = Integer.parseInt(userInput.substring(command.length()).trim());
+            if (taskNumber < 1 || taskNumber > taskCounter) {
+                throw new GoatBotException(INVALID_INPUT_MESSAGE);
+            }
+            return taskNumber;
+        } catch (NumberFormatException e) {
+            throw new GoatBotException(INVALID_INPUT_MESSAGE);
+        }
     }
 
     private static void showList(Task[] tasks, int taskCounter) {
