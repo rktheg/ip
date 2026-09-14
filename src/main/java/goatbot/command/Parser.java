@@ -1,4 +1,9 @@
-package goatbot;
+package goatbot.command;
+
+import goatbot.task.Deadline;
+import goatbot.task.Event;
+import goatbot.task.Todo;
+import goatbot.exception.GoatBotException;
 
 /**
  * Parses user input into task objects.

@@ -1,4 +1,4 @@
-package goatbot;
+package goatbot.task;
 
 /**
  * Stores task list state for a future task-list refactor.

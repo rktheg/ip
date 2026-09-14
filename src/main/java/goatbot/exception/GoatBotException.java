@@ -1,4 +1,4 @@
-package goatbot;
+package goatbot.exception;
 
 /**
  * Represents an error caused by invalid user input in Goat Bot.

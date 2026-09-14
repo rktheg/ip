@@ -1,4 +1,4 @@
-package goatbot;
+package goatbot.task;
 
 /**
  * Represents a task that happens from one specified time to another.

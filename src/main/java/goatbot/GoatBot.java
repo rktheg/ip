@@ -1,5 +1,9 @@
 package goatbot;
 
+import goatbot.command.Parser;
+import goatbot.exception.GoatBotException;
+import goatbot.task.Task;
+
 import java.util.Scanner;
 
 /**
@@ -48,7 +52,7 @@ public class GoatBot {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         int taskCounter = 0;
-        Task[] tasks = new Task[MAX_TASK_COUNT]; //init task array with MAX_TASK_COUNT places
+        Task[] tasks = new Task[MAX_TASK_COUNT];
 
         while (!userInput.equals("bye")) {
             try {

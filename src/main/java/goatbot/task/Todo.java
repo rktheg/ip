@@ -1,4 +1,4 @@
-package goatbot;
+package goatbot.task;
 
 /**
  * Represents a task without a deadline or event time.
