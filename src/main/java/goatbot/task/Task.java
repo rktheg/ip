@@ -1,4 +1,4 @@
-package goatbot;
+package goatbot.task;
 
 /**
  * Represents one task in the task list.
