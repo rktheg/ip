@@ -126,6 +126,8 @@ def is_banner_art_line(line: str) -> bool:
         return False
     if set(stripped_line) == {"?"}:
         return True
+    if all(character in {"@", " "} for character in stripped_line):
+        return True
     return all(not character.isascii() for character in stripped_line)
 
 
