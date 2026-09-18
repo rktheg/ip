@@ -6,6 +6,7 @@ import goatbot.storage.Storage;
 import goatbot.task.Task;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 /**
@@ -51,7 +52,9 @@ public class GoatBot {
                 """;
 
         System.out.println(welcomeBanner);
-        Storage storage = new Storage("./data/goatbot.txt");
+        Storage storage = new Storage(
+                Path.of("data", "goatbot.txt").toString()
+        );
         Task[] tasks = new Task[MAX_TASK_COUNT];
         int taskCounter = storage.loadTasks(tasks);
         Scanner scanner = new Scanner(System.in);
