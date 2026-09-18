@@ -2,8 +2,10 @@ package goatbot;
 
 import goatbot.command.Parser;
 import goatbot.exception.GoatBotException;
+import goatbot.storage.Storage;
 import goatbot.task.Task;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -49,6 +51,7 @@ public class GoatBot {
                 """;
 
         System.out.println(welcomeBanner);
+        Storage storage = new Storage("./data/goatbot.txt");
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         int taskCounter = 0;
@@ -62,26 +65,31 @@ public class GoatBot {
                     int taskNumber = parseTaskNumber(userInput, "unmark", taskCounter);
                     tasks[taskNumber - 1].markAsNotDone();
                     showUnmarkedTask(tasks[taskNumber - 1]);
+                    storage.saveTasks(tasks, taskCounter);
                 } else if (userInput.startsWith("mark ")) {
                     int taskNumber = parseTaskNumber(userInput, "mark", taskCounter);
                     tasks[taskNumber - 1].markAsDone();
                     showMarkedTask(tasks[taskNumber - 1]);
+                    storage.saveTasks(tasks, taskCounter);
                 } else if (userInput.startsWith("event ")) {
                     tasks[taskCounter] = Parser.parseEvent(userInput);
                     taskCounter++;
                     showAddedEvent(tasks[taskCounter - 1], taskCounter);
+                    storage.saveTasks(tasks, taskCounter);
                 } else if (userInput.equals("todo") || userInput.startsWith("todo ")) {
                     tasks[taskCounter] = Parser.parseTodo(userInput);
                     taskCounter++;
                     showAddedTodo(tasks[taskCounter - 1], taskCounter);
+                    storage.saveTasks(tasks, taskCounter);
                 } else if (userInput.startsWith("deadline ")) {
                     tasks[taskCounter] = Parser.parseDeadline(userInput);
                     taskCounter++;
                     showAddedDeadline(tasks[taskCounter - 1], taskCounter);
+                    storage.saveTasks(tasks, taskCounter);
                 } else {
                     System.out.println(INVALID_INPUT_MESSAGE);
                 }
-            } catch (GoatBotException e) {
+            } catch (GoatBotException | IOException e) {
                 System.out.println(e.getMessage());
             }
             userInput = scanner.nextLine();
