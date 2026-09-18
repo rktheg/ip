@@ -75,6 +75,10 @@ public class GoatBot {
                 } else if (userInput.startsWith("deadline ")) {
                     tasks.add(Parser.parseDeadline(userInput));
                     showAddedDeadline(tasks.getLast(), tasks.size());
+                } else if (userInput.startsWith("delete ")) {
+                    int taskNumber = parseTaskNumber(userInput, "delete", tasks.size());
+                    showDeletedTask(tasks.get(taskNumber - 1), tasks.size() - 1);
+                    tasks.remove(taskNumber - 1);
                 } else {
                     System.out.println(INVALID_INPUT_MESSAGE);
                 }
@@ -87,7 +91,13 @@ public class GoatBot {
     }
 
     /**
-     * Parses and validates a task number from a mark or unmark command.
+     * Parses and validates the task number supplied with a task command.
+     *
+     * @param userInput complete command entered by the user
+     * @param command command word preceding the task number
+     * @param taskCounter number of tasks currently stored
+     * @return valid one-based task number
+     * @throws GoatBotException if the task number is missing, invalid, or out of range
      */
     private static int parseTaskNumber(String userInput, String command, int taskCounter) throws GoatBotException {
         try {
@@ -99,6 +109,20 @@ public class GoatBot {
         } catch (NumberFormatException e) {
             throw new GoatBotException(INVALID_INPUT_MESSAGE);
         }
+    }
+
+    /**
+     * Displays the task that was deleted and the updated number of tasks.
+     *
+     * @param task deleted task
+     * @param taskCounter number of tasks remaining
+     */
+    private static void showDeletedTask(Task task, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("     OK, I've deleted this task:");
+        System.out.println(task.toString());
+        System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
     }
 
     /**
@@ -116,6 +140,11 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a task was marked as done.
+     *
+     * @param task task that was marked
+     */
     private static void showMarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println("     Nice! I've marked this task as done:");
@@ -123,6 +152,11 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a task was marked as not done.
+     *
+     * @param task task that was unmarked
+     */
     private static void showUnmarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println("     OK, I've marked this task as not done yet:");
@@ -130,6 +164,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a todo was added.
+     *
+     * @param task todo that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedTodo(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added todo successfully, dont forget: \n"
@@ -138,6 +178,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a deadline was added.
+     *
+     * @param task deadline that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedDeadline(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added deadline successfully, DO ON TIME PLS: \n" + " "
@@ -146,6 +192,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that an event was added.
+     *
+     * @param task event that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedEvent(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added event successfully, better attend: \n"
