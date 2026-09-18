@@ -21,7 +21,7 @@ public class GoatBot {
      *
      * @param args command line arguments, currently unused
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String welcomeBanner = """
                 ____________________________________________________________
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -52,10 +52,10 @@ public class GoatBot {
 
         System.out.println(welcomeBanner);
         Storage storage = new Storage("./data/goatbot.txt");
+        Task[] tasks = new Task[MAX_TASK_COUNT];
+        int taskCounter = storage.loadTasks(tasks);
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
-        int taskCounter = 0;
-        Task[] tasks = new Task[MAX_TASK_COUNT];
 
         while (!userInput.equals("bye")) {
             try {
