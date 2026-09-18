@@ -26,6 +26,52 @@ ____________________________________________________________
 ____________________________________________________________
 ```
 
+## Test Case: Delete task and update list
+
+Aim: Verify that deleting a task removes it and renumbers the remaining tasks.
+
+### Input
+
+```text
+todo first task
+todo second task
+delete 1
+list
+bye
+```
+
+### Expected Output
+
+```text
+____________________________________________________________
+ Hello! I'm Goat Bot.
+ What can I do for you?
+____________________________________________________________
+
+    ____________________________________________________________
+    added todo successfully, dont forget: 
+    first task
+    Now you have 1 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+    added todo successfully, dont forget: 
+    second task
+    Now you have 2 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+     OK, I've deleted this task:
+[T][ ] first task
+    Now you have 1 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] second task
+    ____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon! Happy hooping :)
+____________________________________________________________
+```
+
 ## Test Case: List empty task list
 
 Aim: Verify that the `list` command works before any tasks have been added.

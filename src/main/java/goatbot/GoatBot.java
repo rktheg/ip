@@ -4,13 +4,13 @@ import goatbot.command.Parser;
 import goatbot.exception.GoatBotException;
 import goatbot.task.Task;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * Entry point for Goat Bot.
  */
 public class GoatBot {
-    private static final int MAX_TASK_COUNT = 100;
     private static final String DIVIDER = "    ____________________________________________________________";
     private static final String INVALID_INPUT_MESSAGE = "Invalid input. Please try again.";
 
@@ -51,33 +51,34 @@ public class GoatBot {
         System.out.println(welcomeBanner);
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
-        int taskCounter = 0;
-        Task[] tasks = new Task[MAX_TASK_COUNT];
+
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while (!userInput.equals("bye")) {
             try {
                 if (userInput.equals("list")) {
-                    showList(tasks, taskCounter);
+                    showList(tasks, tasks.size());
                 } else if (userInput.startsWith("unmark ")) {
-                    int taskNumber = parseTaskNumber(userInput, "unmark", taskCounter);
-                    tasks[taskNumber - 1].markAsNotDone();
-                    showUnmarkedTask(tasks[taskNumber - 1]);
+                    int taskNumber = parseTaskNumber(userInput, "unmark", tasks.size());
+                    tasks.get(taskNumber - 1).markAsNotDone();
+                    showUnmarkedTask(tasks.get(taskNumber - 1));
                 } else if (userInput.startsWith("mark ")) {
-                    int taskNumber = parseTaskNumber(userInput, "mark", taskCounter);
-                    tasks[taskNumber - 1].markAsDone();
-                    showMarkedTask(tasks[taskNumber - 1]);
+                    int taskNumber = parseTaskNumber(userInput, "mark", tasks.size());
+                    tasks.get(taskNumber - 1).markAsDone();
+                    showMarkedTask(tasks.get(taskNumber - 1));
                 } else if (userInput.startsWith("event ")) {
-                    tasks[taskCounter] = Parser.parseEvent(userInput);
-                    taskCounter++;
-                    showAddedEvent(tasks[taskCounter - 1], taskCounter);
+                    tasks.add(Parser.parseEvent(userInput));
+                    showAddedEvent(tasks.getLast(), tasks.size());
                 } else if (userInput.equals("todo") || userInput.startsWith("todo ")) {
-                    tasks[taskCounter] = Parser.parseTodo(userInput);
-                    taskCounter++;
-                    showAddedTodo(tasks[taskCounter - 1], taskCounter);
+                    tasks.add(Parser.parseTodo(userInput));
+                    showAddedTodo(tasks.getLast(), tasks.size());
                 } else if (userInput.startsWith("deadline ")) {
-                    tasks[taskCounter] = Parser.parseDeadline(userInput);
-                    taskCounter++;
-                    showAddedDeadline(tasks[taskCounter - 1], taskCounter);
+                    tasks.add(Parser.parseDeadline(userInput));
+                    showAddedDeadline(tasks.getLast(), tasks.size());
+                } else if (userInput.startsWith("delete ")) {
+                    int taskNumber = parseTaskNumber(userInput, "delete", tasks.size());
+                    showDeletedTask(tasks.get(taskNumber - 1), tasks.size() - 1);
+                    tasks.remove(taskNumber - 1);
                 } else {
                     System.out.println(INVALID_INPUT_MESSAGE);
                 }
@@ -90,7 +91,13 @@ public class GoatBot {
     }
 
     /**
-     * Parses and validates a task number from a mark or unmark command.
+     * Parses and validates the task number supplied with a task command.
+     *
+     * @param userInput complete command entered by the user
+     * @param command command word preceding the task number
+     * @param taskCounter number of tasks currently stored
+     * @return valid one-based task number
+     * @throws GoatBotException if the task number is missing, invalid, or out of range
      */
     private static int parseTaskNumber(String userInput, String command, int taskCounter) throws GoatBotException {
         try {
@@ -104,15 +111,40 @@ public class GoatBot {
         }
     }
 
-    private static void showList(Task[] tasks, int taskCounter) {
+    /**
+     * Displays the task that was deleted and the updated number of tasks.
+     *
+     * @param task deleted task
+     * @param taskCounter number of tasks remaining
+     */
+    private static void showDeletedTask(Task task, int taskCounter) {
+        System.out.println(DIVIDER);
+        System.out.println("     OK, I've deleted this task:");
+        System.out.println(task.toString());
+        System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
+    }
+
+    /**
+     * Displays all tasks in their current list order.
+     *
+     * @param tasks tasks to display
+     * @param taskCounter number of tasks to display
+     */
+    private static void showList(ArrayList<Task> tasks, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("     Here are the tasks in your list:");
         for (int i = 1; i <= taskCounter; i++) {
-            System.out.println("     " + i + "." + tasks[i - 1].toString());
+            System.out.println("     " + i + "." + tasks.get(i - 1).toString());
         }
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a task was marked as done.
+     *
+     * @param task task that was marked
+     */
     private static void showMarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println("     Nice! I've marked this task as done:");
@@ -120,6 +152,11 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a task was marked as not done.
+     *
+     * @param task task that was unmarked
+     */
     private static void showUnmarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println("     OK, I've marked this task as not done yet:");
@@ -127,6 +164,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a todo was added.
+     *
+     * @param task todo that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedTodo(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added todo successfully, dont forget: \n"
@@ -135,6 +178,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that a deadline was added.
+     *
+     * @param task deadline that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedDeadline(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added deadline successfully, DO ON TIME PLS: \n" + " "
@@ -143,6 +192,12 @@ public class GoatBot {
         System.out.println(DIVIDER);
     }
 
+    /**
+     * Displays confirmation that an event was added.
+     *
+     * @param task event that was added
+     * @param taskCounter updated number of tasks
+     */
     private static void showAddedEvent(Task task, int taskCounter) {
         System.out.println(DIVIDER);
         System.out.println("    added event successfully, better attend: \n"
