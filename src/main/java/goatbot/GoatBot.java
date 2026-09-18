@@ -2,8 +2,11 @@ package goatbot;
 
 import goatbot.command.Parser;
 import goatbot.exception.GoatBotException;
+import goatbot.storage.Storage;
 import goatbot.task.Task;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,7 +22,7 @@ public class GoatBot {
      *
      * @param args command line arguments, currently unused
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String welcomeBanner = """
                 ____________________________________________________________
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -49,10 +52,13 @@ public class GoatBot {
                 """;
 
         System.out.println(welcomeBanner);
+        Storage storage = new Storage(
+                Path.of("data", "goatbot.txt").toString()
+        );
+        ArrayList<Task> tasks = new ArrayList<>();
+        storage.loadTasks(tasks);
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
-
-        ArrayList<Task> tasks = new ArrayList<>();
 
         while (!userInput.equals("bye")) {
             try {
@@ -62,27 +68,33 @@ public class GoatBot {
                     int taskNumber = parseTaskNumber(userInput, "unmark", tasks.size());
                     tasks.get(taskNumber - 1).markAsNotDone();
                     showUnmarkedTask(tasks.get(taskNumber - 1));
+                    storage.saveTasks(tasks);
                 } else if (userInput.startsWith("mark ")) {
                     int taskNumber = parseTaskNumber(userInput, "mark", tasks.size());
                     tasks.get(taskNumber - 1).markAsDone();
                     showMarkedTask(tasks.get(taskNumber - 1));
+                    storage.saveTasks(tasks);
                 } else if (userInput.startsWith("event ")) {
                     tasks.add(Parser.parseEvent(userInput));
                     showAddedEvent(tasks.getLast(), tasks.size());
+                    storage.saveTasks(tasks);
                 } else if (userInput.equals("todo") || userInput.startsWith("todo ")) {
                     tasks.add(Parser.parseTodo(userInput));
                     showAddedTodo(tasks.getLast(), tasks.size());
+                    storage.saveTasks(tasks);
                 } else if (userInput.startsWith("deadline ")) {
                     tasks.add(Parser.parseDeadline(userInput));
                     showAddedDeadline(tasks.getLast(), tasks.size());
+                    storage.saveTasks(tasks);
                 } else if (userInput.startsWith("delete ")) {
                     int taskNumber = parseTaskNumber(userInput, "delete", tasks.size());
                     showDeletedTask(tasks.get(taskNumber - 1), tasks.size() - 1);
                     tasks.remove(taskNumber - 1);
+                    storage.saveTasks(tasks);
                 } else {
                     System.out.println(INVALID_INPUT_MESSAGE);
                 }
-            } catch (GoatBotException e) {
+            } catch (GoatBotException | IOException e) {
                 System.out.println(e.getMessage());
             }
             userInput = scanner.nextLine();

@@ -46,4 +46,13 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Returns this task in the pipe-separated format used for storage.
+     *
+     * @return stored representation of this task
+     */
+    public String toFileString() {
+        return (isDone ? "1" : "0") + " | " + description;
+    }
 }
