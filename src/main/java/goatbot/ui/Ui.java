@@ -1,8 +1,8 @@
 package goatbot.ui;
 
 import goatbot.task.Task;
+import goatbot.task.TaskList;
 
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -100,7 +100,7 @@ public class Ui {
      *
      * @param tasks tasks to display
      */
-    public void showList(List<Task> tasks) {
+    public void showList(TaskList tasks) {
         System.out.println(DIVIDER);
         System.out.println("     Here are the tasks in your list:");
         for (int i = 1; i <= tasks.size(); i++) {

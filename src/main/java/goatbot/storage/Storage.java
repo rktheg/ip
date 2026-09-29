@@ -3,11 +3,11 @@ package goatbot.storage;
 import goatbot.command.FileParser;
 import goatbot.exception.GoatBotException;
 import goatbot.task.Task;
+import goatbot.task.TaskList;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -32,10 +32,11 @@ public class Storage {
      * @param tasks list containing the tasks
      * @throws IOException if the directory or file cannot be written
      */
-    public void saveTasks(ArrayList<Task> tasks) throws IOException {
+    public void saveTasks(TaskList tasks) throws IOException {
         file.getParentFile().mkdirs();
         try (FileWriter fw = new FileWriter(file)) {
-            for (Task task : tasks) {
+            for (int i = 0; i < tasks.size(); i++) {
+                Task task = tasks.get(i);
                 fw.write(task.toFileString());
                 fw.write(System.lineSeparator());
             }
@@ -47,8 +48,9 @@ public class Storage {
      *
      * @param tasks list that receives the loaded tasks
      * @throws IOException if the storage file cannot be read
+     * @throws GoatBotException if a stored task cannot be parsed
      */
-    public void loadTasks(ArrayList<Task> tasks) throws IOException {
+    public void loadTasks(TaskList tasks) throws IOException, GoatBotException {
         if (!file.exists()) {
             return;
         }
@@ -65,8 +67,6 @@ public class Storage {
                     throw new GoatBotException("Invalid task entry in storage");
                 }
             }
-        } catch (GoatBotException e) {
-            System.out.println(e.getMessage());
         }
     }
 }

@@ -1,9 +1,9 @@
 package goatbot.command;
 
+import goatbot.exception.GoatBotException;
 import goatbot.task.Deadline;
 import goatbot.task.Event;
 import goatbot.task.Todo;
-import goatbot.exception.GoatBotException;
 
 /**
  * Parses user input into task objects.
@@ -76,5 +76,26 @@ public class Parser {
             throw new GoatBotException("Todo Format: 'todo xxx'");
         }
         return new Todo(todoString);
+    }
+
+    /**
+     * Parses and validates the task number supplied with a task command.
+     *
+     * @param userInput complete command entered by the user
+     * @param command command word preceding the task number
+     * @param taskCounter number of tasks currently stored
+     * @return valid one-based task number
+     * @throws GoatBotException if the task number is missing, invalid, or out of range
+     */
+    public static int parseTaskNumber(String userInput, String command, int taskCounter) throws GoatBotException {
+        try {
+            int taskNumber = Integer.parseInt(userInput.substring(command.length()).trim());
+            if (taskNumber < 1 || taskNumber > taskCounter) {
+                throw new GoatBotException(INVALID_INPUT_MESSAGE);
+            }
+            return taskNumber;
+        } catch (NumberFormatException e) {
+            throw new GoatBotException(INVALID_INPUT_MESSAGE);
+        }
     }
 }
