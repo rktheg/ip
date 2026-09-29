@@ -10,29 +10,38 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * Entry point for Goat Bot.
+ * Coordinates Goat Bot's user interface, storage, and task list.
  */
 public class GoatBot {
-    private static final String INVALID_INPUT_MESSAGE = "Invalid input. Please try again.";
+    private static final String INVALID_INPUT_MESSAGE =
+            "Invalid input. Please try again.";
+    private final Ui ui;
+    private final Storage storage;
+    private TaskList tasks;
 
     /**
-     * Starts the command loop and responds to user input.
+     * Creates Goat Bot and loads its stored tasks.
      *
-     * @param args command line arguments, currently unused
+     * @param filePath path of the task storage file
      */
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        ui.showWelcome();
-        Storage storage = new Storage(
-                Path.of("data", "goatbot.txt").toString()
-        );
-        TaskList tasks = new TaskList();
+    public GoatBot(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        tasks = new TaskList();
+
         try {
             storage.loadTasks(tasks);
         } catch (GoatBotException | IOException e) {
             ui.showError(e.getMessage());
             tasks = new TaskList();
         }
+    }
+
+    /**
+     * Runs Goat Bot until the user enters the bye command.
+     */
+    public void run() {
+        ui.showWelcome();
         String userInput = ui.readCommand();
 
         while (!userInput.equals("bye")) {
@@ -75,5 +84,15 @@ public class GoatBot {
             userInput = ui.readCommand();
         }
         ui.showGoodbye();
+    }
+
+    /**
+     * Starts the command loop and responds to user input.
+     *
+     * @param args command line arguments, currently unused
+     */
+    public static void main(String[] args) {
+        String filePath = Path.of("data", "goatbot.txt").toString();
+        new GoatBot(filePath).run();
     }
 }
