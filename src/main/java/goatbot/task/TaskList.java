@@ -1,5 +1,6 @@
 package goatbot.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -60,5 +61,23 @@ public class TaskList {
      */
     public Task getLast() {
         return tasks.get(tasks.size() - 1);
+    }
+
+    /**
+     * Returns tasks occurring on the specified date.
+     *
+     * @param date date to search for
+     * @return task list containing matching tasks
+     */
+    public TaskList findOn(LocalDate date) {
+        TaskList matches = new TaskList();
+
+        for (Task task : tasks) {
+            if (task.occursOn(date)) {
+                matches.add(task);
+            }
+        }
+
+        return matches;
     }
 }

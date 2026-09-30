@@ -1,5 +1,7 @@
 package goatbot.task;
 
+import java.time.LocalDate;
+
 /**
  * Represents one task in the task list.
  */
@@ -54,5 +56,15 @@ public class Task {
      */
     public String toFileString() {
         return (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
+     * Returns whether this task occurs on the specified date.
+     *
+     * @param date date to check
+     * @return true if this task occurs on the date
+     */
+    public boolean occursOn(LocalDate date) {
+        return false;
     }
 }
