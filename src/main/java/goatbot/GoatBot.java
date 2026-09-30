@@ -8,6 +8,7 @@ import goatbot.ui.Ui;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 
 /**
  * Coordinates Goat Bot's user interface, storage, and task list.
@@ -75,6 +76,10 @@ public class GoatBot {
                     ui.showDeletedTask(tasks.get(taskNumber - 1), tasks.size() - 1);
                     tasks.delete(taskNumber - 1);
                     storage.saveTasks(tasks);
+                } else if (userInput.startsWith("on ")) {
+                    LocalDate date = Parser.parseSearchDate(userInput);
+                    TaskList matches = tasks.findOn(date);
+                    ui.showTasksOn(date, matches);
                 } else {
                     ui.showError(INVALID_INPUT_MESSAGE);
                 }

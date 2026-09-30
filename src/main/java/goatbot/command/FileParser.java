@@ -5,6 +5,8 @@ import goatbot.task.Event;
 import goatbot.task.Task;
 import goatbot.task.Todo;
 
+import java.time.LocalDateTime;
+
 /**
  * Converts pipe-separated task records from storage into task objects.
  */
@@ -32,7 +34,8 @@ public class FileParser {
      */
     public static Deadline parseDeadline(String line) {
         String[] parts = splitLine(line);
-        Deadline deadline = new Deadline(parts[2], parts[3]);
+        LocalDateTime by = LocalDateTime.parse(parts[3]);
+        Deadline deadline = new Deadline(parts[2], by);
         restoreStatus(deadline, parts[1]);
         return deadline;
     }
@@ -45,7 +48,9 @@ public class FileParser {
      */
     public static Event parseEvent(String line) {
         String[] parts = splitLine(line);
-        Event event = new Event(parts[2], parts[3], parts[4]);
+        LocalDateTime from = LocalDateTime.parse(parts[3]);
+        LocalDateTime to = LocalDateTime.parse(parts[4]);
+        Event event = new Event(parts[2], from, to);
         restoreStatus(event, parts[1]);
         return event;
     }

@@ -3,6 +3,8 @@ package goatbot.ui;
 import goatbot.task.Task;
 import goatbot.task.TaskList;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 /**
@@ -39,6 +41,9 @@ public class Ui {
              Bye. Hope to see you again soon! Happy hooping :)
             ____________________________________________________________
             """;
+
+    private static final DateTimeFormatter DATE_DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("MMM d yyyy");
 
     private final Scanner scanner;
 
@@ -172,6 +177,25 @@ public class Ui {
         System.out.println("    added event successfully, better attend: \n"
                 + "    " + task.getDescription());
         System.out.println("    Now you have " + taskCounter + " tasks in your list.");
+        System.out.println(DIVIDER);
+    }
+
+    /**
+     * Displays tasks occurring on the specified date.
+     *
+     * @param date searched date
+     * @param tasks matching tasks
+     */
+    public void showTasksOn(LocalDate date, TaskList tasks) {
+        System.out.println(DIVIDER);
+        System.out.println("     Tasks on "
+                + date.format(DATE_DISPLAY_FORMAT) + ":");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "."
+                    + tasks.get(i));
+        }
+
         System.out.println(DIVIDER);
     }
 }

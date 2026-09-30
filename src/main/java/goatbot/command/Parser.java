@@ -5,6 +5,11 @@ import goatbot.task.Deadline;
 import goatbot.task.Event;
 import goatbot.task.Todo;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 /**
  * Parses user input into task objects.
  */
@@ -16,6 +21,10 @@ public class Parser {
     private static final String BY_MARKER = "/by";
     private static final String FROM_MARKER = "/from";
     private static final String TO_MARKER = "/to";
+    private static final DateTimeFormatter DATE_TIME_INPUT_FORMAT =
+            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final DateTimeFormatter DATE_INPUT_FORMAT =
+            DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Parses user input into a deadline task.
@@ -36,7 +45,15 @@ public class Parser {
         if (deadlineString.isEmpty() || deadlineDate.isEmpty()) {
             throw new GoatBotException("Invalid deadline format. Please try again.");
         }
-        return new Deadline(deadlineString, deadlineDate);
+        try {
+            LocalDateTime dateTime =
+                    LocalDateTime.parse(deadlineDate, DATE_TIME_INPUT_FORMAT);
+            return new Deadline(deadlineString, dateTime);
+        } catch (DateTimeParseException e) {
+            throw new GoatBotException(
+                    "Invalid date. Use d/M/yyyy HHmm, e.g. 2/12/2019 1800."
+            );
+        }
     }
 
     /**
@@ -55,12 +72,26 @@ public class Parser {
         }
 
         String eventString = eventDetails.substring(0, fromIndex).trim();
-        String eventStartTime = eventDetails.substring(fromIndex + FROM_MARKER.length(), toIndex).trim();
+        String eventStartTime = eventDetails
+                .substring(fromIndex + FROM_MARKER.length(), toIndex).trim();
         String eventEndTime = eventDetails.substring(toIndex + TO_MARKER.length()).trim();
         if (eventString.isEmpty() || eventStartTime.isEmpty() || eventEndTime.isEmpty()) {
             throw new GoatBotException("Invalid event format. Please try again.");
         }
-        return new Event(eventString, eventStartTime, eventEndTime);
+        try {
+            LocalDateTime from = LocalDateTime.parse(eventStartTime, DATE_TIME_INPUT_FORMAT);
+            LocalDateTime to = LocalDateTime.parse(eventEndTime, DATE_TIME_INPUT_FORMAT);
+            if (to.isBefore(from)) {
+                throw new GoatBotException(
+                        "Event end time cannot be before its start time."
+                );
+            }
+            return new Event(eventString, from, to);
+        } catch (DateTimeParseException e) {
+            throw new GoatBotException(
+                    "Invalid date. Use d/M/yyyy HHmm, e.g. 2/12/2019 1800."
+            );
+        }
     }
 
     /**
@@ -87,7 +118,8 @@ public class Parser {
      * @return valid one-based task number
      * @throws GoatBotException if the task number is missing, invalid, or out of range
      */
-    public static int parseTaskNumber(String userInput, String command, int taskCounter) throws GoatBotException {
+    public static int parseTaskNumber(String userInput, String command, int taskCounter)
+            throws GoatBotException {
         try {
             int taskNumber = Integer.parseInt(userInput.substring(command.length()).trim());
             if (taskNumber < 1 || taskNumber > taskCounter) {
@@ -96,6 +128,26 @@ public class Parser {
             return taskNumber;
         } catch (NumberFormatException e) {
             throw new GoatBotException(INVALID_INPUT_MESSAGE);
+        }
+    }
+
+    /**
+     * Parses the date supplied with an on command.
+     *
+     * @param userInput complete on command
+     * @return parsed search date
+     * @throws GoatBotException if the date is missing or invalid
+     */
+    public static LocalDate parseSearchDate(String userInput)
+            throws GoatBotException {
+        String dateText = userInput.substring("on".length()).trim();
+
+        try {
+            return LocalDate.parse(dateText, DATE_INPUT_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new GoatBotException(
+                    "Invalid date. Use d/M/yyyy, e.g. 2/12/2019."
+            );
         }
     }
 }
