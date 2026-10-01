@@ -55,10 +55,22 @@ public class FileParser {
         return event;
     }
 
+    /**
+     * Splits a pipe-separated record while preserving empty fields.
+     *
+     * @param line stored task record
+     * @return fields contained in the record
+     */
     private static String[] splitLine(String line) {
         return line.split("\\s*\\|\\s*", -1);
     }
 
+    /**
+     * Restores a task's completed state from its stored status value.
+     *
+     * @param task task whose state should be restored
+     * @param status stored completion status
+     */
     private static void restoreStatus(Task task, String status) {
         if (status.equals(DONE_STATUS)) {
             task.markAsDone();

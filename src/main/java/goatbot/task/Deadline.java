@@ -24,16 +24,32 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Returns this deadline with its type indicator and formatted due time.
+     *
+     * @return display representation of this deadline
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by.format(DISPLAY_FORMAT) + ")";
     }
 
+    /**
+     * Returns this deadline in the pipe-separated storage format.
+     *
+     * @return stored representation of this deadline
+     */
     @Override
     public String toFileString() {
         return "D | " + super.toFileString() + " | " + by;
     }
 
+    /**
+     * Returns whether this deadline falls on the specified date.
+     *
+     * @param date date to check
+     * @return true if the deadline falls on the date
+     */
     @Override
     public boolean occursOn(LocalDate date) {
         return by.toLocalDate().equals(date);

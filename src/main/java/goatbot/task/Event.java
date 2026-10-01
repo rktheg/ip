@@ -27,6 +27,11 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Returns this event with its type indicator and formatted time range.
+     *
+     * @return display representation of this event
+     */
     @Override
     public String toString() {
         return "[E]" + super.toString()
@@ -34,11 +39,22 @@ public class Event extends Task {
                 + " to: " + to.format(DISPLAY_FORMAT) + ")";
     }
 
+    /**
+     * Returns this event in the pipe-separated storage format.
+     *
+     * @return stored representation of this event
+     */
     @Override
     public String toFileString() {
         return "E | " + super.toFileString() + " | " + from + " | " + to;
     }
 
+    /**
+     * Returns whether the specified date falls within this event's date range.
+     *
+     * @param date date to check
+     * @return true if the event occurs on the date
+     */
     @Override
     public boolean occursOn(LocalDate date) {
         LocalDate startDate = from.toLocalDate();
