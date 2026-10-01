@@ -21,6 +21,7 @@ public class Parser {
     private static final String BY_MARKER = "/by";
     private static final String FROM_MARKER = "/from";
     private static final String TO_MARKER = "/to";
+    private static final String FIND_COMMAND = "find";
     private static final DateTimeFormatter DATE_TIME_INPUT_FORMAT =
             DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private static final DateTimeFormatter DATE_INPUT_FORMAT =
@@ -107,6 +108,21 @@ public class Parser {
             throw new GoatBotException("Todo Format: 'todo xxx'");
         }
         return new Todo(todoString);
+    }
+
+    /**
+     * Parses the keyword supplied with a find command.
+     *
+     * @param userInput complete find command
+     * @return non-empty keyword to search for
+     * @throws GoatBotException if the keyword is missing
+     */
+    public static String parseFindKeyword(String userInput) throws GoatBotException {
+        String keyword = userInput.substring(FIND_COMMAND.length()).trim();
+        if (keyword.isEmpty()) {
+            throw new GoatBotException("find format: 'find xxx'");
+        }
+        return keyword;
     }
 
     /**
