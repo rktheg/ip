@@ -21,6 +21,12 @@ FENCED_BLOCK_PATTERN = re.compile(
     r"```(?:text)?\s*\n(?P<content>.*?)\n```\s*",
     re.MULTILINE | re.DOTALL,
 )
+ASCII_BANNER_LINES = {
+    "2222222      3333333",
+    "22            33",
+    "2222222       333333",
+    "22                 33",
+}
 
 
 @dataclass(frozen=True)
@@ -124,6 +130,8 @@ def is_banner_art_line(line: str) -> bool:
     stripped_line = line.strip()
     if not stripped_line:
         return False
+    if stripped_line in ASCII_BANNER_LINES:
+        return True
     if set(stripped_line) == {"?"}:
         return True
     if all(character in {"@", " "} for character in stripped_line):
