@@ -22,10 +22,20 @@ public class Task {
         isDone = false;
     }
 
+    /**
+     * Returns the icon representing this task's completion status.
+     *
+     * @return completion status icon
+     */
     public String getStatusIcon() {
         return isDone ? DONE_STATUS_ICON : NOT_DONE_STATUS_ICON;
     }
 
+    /**
+     * Returns the task description prefixed by its completion status.
+     *
+     * @return display representation of this task
+     */
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;
@@ -45,6 +55,11 @@ public class Task {
         isDone = false;
     }
 
+    /**
+     * Returns the description of this task.
+     *
+     * @return task description
+     */
     public String getDescription() {
         return description;
     }

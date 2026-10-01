@@ -14,11 +14,21 @@ public class Todo extends Task {
         super(description);
     }
 
+    /**
+     * Returns this task with its todo type indicator.
+     *
+     * @return display representation of this todo
+     */
     @Override
     public String toString() {
         return "[T]" + super.toString();
     }
 
+    /**
+     * Returns this todo in the pipe-separated storage format.
+     *
+     * @return stored representation of this todo
+     */
     @Override
     public String toFileString() {
         return "T | " + super.toFileString();
