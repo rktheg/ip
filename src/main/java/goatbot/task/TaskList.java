@@ -77,7 +77,23 @@ public class TaskList {
                 matches.add(task);
             }
         }
+        return matches;
+    }
 
+    /**
+     * Returns tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword keyword to search for
+     * @return task list containing matching tasks
+     */
+    public TaskList findTasks(String keyword) {
+        TaskList matches = new TaskList();
+
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
         return matches;
     }
 }

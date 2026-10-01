@@ -442,6 +442,88 @@ ____________________________________________________________
 ____________________________________________________________
 ```
 
+## Test Case: Find tasks by keyword
+
+Aim: Verify that `find` displays only tasks whose descriptions contain the keyword.
+
+### Input
+
+```text
+todo read book
+deadline return book /by 2/12/2019 1800
+todo wash car
+find book
+bye
+```
+
+### Expected Output
+
+```text
+____________________________________________________________
+ Hello! I'm Goat Bot.
+ What can I do for you?
+____________________________________________________________
+
+    ____________________________________________________________
+    added todo successfully, dont forget: 
+    read book
+    Now you have 1 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+    added deadline successfully, DO ON TIME PLS: 
+     return book
+    Now you have 2 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+    added todo successfully, dont forget: 
+    wash car
+    Now you have 3 tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the matching tasks in your list:
+     1.[T][ ] read book
+     2.[D][ ] return book (by: Dec 2 2019, 6:00pm)
+    ____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon! Happy hooping :)
+____________________________________________________________
+```
+
+## Test Case: Reject empty find and show no matches
+
+Aim: Verify that an empty find is rejected and a search with no matches displays an empty result.
+
+### Input
+
+```text
+todo read book
+find
+find car
+bye
+```
+
+### Expected Output
+
+```text
+____________________________________________________________
+ Hello! I'm Goat Bot.
+ What can I do for you?
+____________________________________________________________
+
+    ____________________________________________________________
+    added todo successfully, dont forget: 
+    read book
+    Now you have 1 tasks in your list.
+    ____________________________________________________________
+find format: 'find xxx'
+    ____________________________________________________________
+     Here are the matching tasks in your list:
+    ____________________________________________________________
+____________________________________________________________
+ Bye. Hope to see you again soon! Happy hooping :)
+____________________________________________________________
+```
+
 ## Test Case: Reject malformed deadline and event without changing task list
 
 Aim: Verify that incomplete deadline and event commands are rejected and do not add partial tasks.

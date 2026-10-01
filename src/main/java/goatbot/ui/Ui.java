@@ -198,4 +198,21 @@ public class Ui {
 
         System.out.println(DIVIDER);
     }
+
+    /**
+     * Displays tasks whose descriptions match a search keyword.
+     *
+     * @param tasks matching tasks
+     */
+    public void showMatchingTasks(TaskList tasks) {
+        System.out.println(DIVIDER);
+        System.out.println("     Here are the matching tasks in your list:");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "."
+                    + tasks.get(i));
+        }
+
+        System.out.println(DIVIDER);
+    }
 }

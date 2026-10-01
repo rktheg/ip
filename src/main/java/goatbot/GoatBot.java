@@ -80,6 +80,10 @@ public class GoatBot {
                     LocalDate date = Parser.parseSearchDate(userInput);
                     TaskList matches = tasks.findOn(date);
                     ui.showTasksOn(date, matches);
+                } else if (userInput.equals("find") || userInput.startsWith("find ")) {
+                    String keyword = Parser.parseFindKeyword(userInput);
+                    TaskList matches = tasks.findTasks(keyword);
+                    ui.showMatchingTasks(matches);
                 } else {
                     ui.showError(INVALID_INPUT_MESSAGE);
                 }
